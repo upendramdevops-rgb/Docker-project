@@ -1,0 +1,10 @@
+FROM ubuntu
+MAINTAINER NAME UPENDRA
+LABEL this is my second image
+ADD <url> .
+WOrKDIR /upendra
+COPY env.log .
+RUN apt update -y
+RUN apt install git -y
+Run touch index.html
+CMD apt install maven -y
