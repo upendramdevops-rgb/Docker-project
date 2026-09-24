@@ -1,0 +1,47 @@
+version: "3.8"
+
+services:
+  bus-tickets:
+    container_name: bust-container
+    build: ./bus
+    ports:
+      - "1111:80"
+    networks:
+      - bus-network
+      - flight-network
+    volumes:
+      - bus:/opt/upendra
+
+  flight-tickets:
+    container_name: flight-container
+    build: ./flight
+    ports:
+      - "2222:80"
+    networks:
+      - flight-network
+    volumes:
+      - flight:/opt/upendra
+
+  movie-tickets:
+    container_name: movie-container
+    build: ./movie
+    ports:
+      - "3333:80"
+    networks:
+      - movie-network
+    volumes:
+      - movie:/opt/upendra
+
+networks:
+  bus-network:
+    driver: bridge
+  flight-network:
+    driver: bridge
+  movie-network:
+    driver: bridge
+
+volumes:
+  bus:
+  flight:
+  movie:
+  
