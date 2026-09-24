@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Upendra Bus Booking</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .container {
+            background: #fff;
+            border-radius: 12px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
+            width: 100%;
+            max-width: 500px;
+            padding: 30px;
+        }
+
+        h1 {
+            text-align: center;
+            color: #333;
+            margin-bottom: 8px;
+        }
+
+        .subtitle {
+            text-align: center;
+            color: #777;
+            margin-bottom: 25px;
+            font-size: 14px;
+        }
+
+        .form-group {
+            margin-bottom: 18px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 6px;
+            color: #444;
+            font-weight: 600;
+            font-size: 14px;
+        }
+
+        input, select {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            font-size: 15px;
+            outline: none;
+            transition: border 0.3s;
+        }
+
+        input:focus, select:focus {
+            border-color: #667eea;
+        }
+
+        button {
+            width: 100%;
+            padding: 14px;
+            background: #667eea;
+            color: #fff;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.3s;
+            margin-top: 10px;
+        }
+
+        button:hover {
+            background: #5568d3;
+        }
+
+        .ticket {
+            display: none;
+            margin-top: 25px;
+            border: 2px dashed #667eea;
+            border-radius: 10px;
+            padding: 20px;
+            background: #f9f9ff;
+        }
+
+        .ticket h2 {
+            color: #667eea;
+            text-align: center;
+            margin-bottom: 15px;
+        }
+
+        .ticket-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 8px 0;
+            border-bottom: 1px solid #eee;
+            font-size: 15px;
+        }
+
+        .ticket-row:last-child {
+            border-bottom: none;
+        }
+
+        .ticket-row span:first-child {
+            color: #777;
+            font-weight: 600;
+        }
+
+        .ticket-row span:last-child {
+            color: #222;
+            font-weight: 600;
+        }
+
+        .success {
+            text-align: center;
+            color: #28a745;
+            font-weight: bold;
+            margin-top: 15px;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>🚌 Upendra Bus Booking</h1>
+    <p class="subtitle">Book your bus ticket in seconds</p>
+
+    <form id="bookingForm">
+        <div class="form-group">
+            <label for="name">Passenger Name</label>
+            <input type="text" id="name" placeholder="Enter your name" required>
+        </div>
+
+        <div class="form-group">
+            <label for="from">From</label>
+            <input type="text" id="from" placeholder="e.g. Hyderabad" required>
+        </div>
+
+        <div class="form-group">
+            <label for="to">To</label>
+            <input type="text" id="to" placeholder="e.g. Bangalore" required>
+        </div>
+
+        <div class="form-group">
+            <label for="date">Travel Date</label>
+            <input type="date" id="date" required>
+        </div>
+
+        <div class="form-group">
+            <label for="seats">Number of Seats</label>
+            <select id="seats">
+                <option value="1">1</option>
+                <option value="2">2</option>
+                <option value="3">3</option>
+                <option value="4">4</option>
+                <option value="5">5</option>
+            </select>
+        </div>
+
+        <button type="submit">Book Ticket</button>
+    </form>
+
+    <div class="ticket" id="ticket">
+        <h2>🎫 Your Ticket</h2>
+        <div class="ticket-row"><span>Passenger</span><span id="tName"></span></div>
+        <div class="ticket-row"><span>From</span><span id="tFrom"></span></div>
+        <div class="ticket-row"><span>To</span><span id="tTo"></span></div>
+        <div class="ticket-row"><span>Date</span><span id="tDate"></span></div>
+        <div class="ticket-row"><span>Seats</span><span id="tSeats"></span></div>
+        <div class="ticket-row"><span>Total Fare</span><span id="tFare"></span></div>
+        <div class="ticket-row"><span>Ticket ID</span><span id="tId"></span></div>
+        <p class="success">✅ Booking Confirmed!</p>
+    </div>
+</div>
+
+<script>
+    const FARE_PER_SEAT = 850; // base fare in INR
+
+    document.getElementById('bookingForm').addEventListener('submit', function (e) {
+        e.preventDefault();
+
+        // Get values from form
+        const name  = document.getElementById('name').value;
+        const from  = document.getElementById('from').value;
+        const to    = document.getElementById('to').value;
+        const date  = document.getElementById('date').value;
+        const seats = parseInt(document.getElementById('seats').value);
+
+        // Calculate total fare
+        const totalFare = seats * FARE_PER_SEAT;
+
+        // Generate a random ticket ID
+        const ticketId = 'BUS-' + Math.floor(100000 + Math.random() * 900000);
+
+        // Fill ticket details
+        document.getElementById('tName').textContent  = name;
+        document.getElementById('tFrom').textContent  = from;
+        document.getElementById('tTo').textContent    = to;
+        document.getElementById('tDate').textContent  = date;
+        document.getElementById('tSeats').textContent = seats;
+        document.getElementById('tFare').textContent  = '₹' + totalFare;
+        document.getElementById('tId').textContent    = ticketId;
+
+        // Show ticket
+        document.getElementById('ticket').style.display = 'block';
+
+        // Reset the form
+        this.reset();
+
+        // Scroll to ticket
+        document.getElementById('ticket').scrollIntoView({ behavior: 'smooth' });
+    });
+</script>
+
+</body>
+</html>
