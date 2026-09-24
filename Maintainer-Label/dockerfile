@@ -1,0 +1,4 @@
+FROM nginx
+MAINTAINER Name upendra
+LABEL This is my first image
+COPY index.htm /usr/share/nginx/html
