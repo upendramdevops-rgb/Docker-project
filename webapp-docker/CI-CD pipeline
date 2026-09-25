@@ -11,7 +11,7 @@ maven 'mymaven'
 stages {
 stage('Code') {
 steps {
-git "https://github.com//dockerwebapp.git"
+git "webapp-docker"
 }
 }
 stage ("CQA") {
