@@ -1,0 +1,71 @@
+pipeline {
+    agent {
+        node {
+            label 'prod'
+        }
+    }
+    environment {
+        scannerHome = tool 'mysonar'
+    }
+    stages {
+        stage('Code') {
+            steps {
+                git "https://github.com/upendra9010/python-code-library-app.git"
+            }
+        }
+        stage('CQA') {
+            steps {
+                withSonarQubeEnv('mysonar') {
+                    sh "${scannerHome}/bin/sonar-scanner -Dsonar.projectKey=MyProject"
+                }
+            }
+        }
+        stage('Build') {
+            steps {
+                sh '''
+                docker build -t dbimage database/
+                docker build -t authimage auth/
+                docker build -t bookimage book/
+                docker build -t borrowimage borrow/
+                docker build -t appimage .
+                '''
+            }
+        }
+        stage('Scan') {
+            steps {
+                sh 'trivy image dbimage'
+                sh 'trivy image authimage'
+                sh 'trivy image bookimage'
+                sh 'trivy image borrowimage'
+                sh 'trivy image appimage'
+            }
+        }
+        stage('Tag') {
+            steps {
+                sh 'docker tag dbimage shaikmustafa/flm2026:dbimage'
+                sh 'docker tag authimage shaikmustafa/flm2026:authimage'
+                sh 'docker tag bookimage shaikmustafa/flm2026:bookimage'
+                sh 'docker tag borrowimage shaikmustafa/flm2026:borrowimage'
+                sh 'docker tag appimage shaikmustafa/flm2026:appimage'
+            }
+        }
+        stage('Registry') {
+            steps {
+                script {
+                    withDockerRegistry(credentialsId: 'dockerhub') {
+                        sh 'docker push shaikmustafa/flm2026:dbimage'
+                        sh 'docker push shaikmustafa/flm2026:authimage'
+                        sh 'docker push shaikmustafa/flm2026:bookimage'
+                        sh 'docker push shaikmustafa/flm2026:borrowimage'
+                        sh 'docker push shaikmustafa/flm2026:appimage'
+                    }
+                }
+            }
+        }
+        stage('Deploy') {
+            steps {
+                sh 'docker stack deploy flm --compose-file=compose.yml'
+            }
+        }
+    }
+}
