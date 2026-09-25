@@ -178,4 +178,20 @@ docker system prune
 # Nuclear option: Remove EVERYTHING not currently used (stopped containers, all unused images, unused volumes)
 docker system prune -a --volumes
 
+6. 🐙 Docker Compose (Multi-container apps)
+If you use docker-compose.yml (like in your Jenkins pipeline).
 
+# Start all services defined in docker-compose.yml in the background
+docker-compose up -d
+
+# Stop all services
+docker-compose down
+
+# Stop and remove volumes (dangerous: deletes data)
+docker-compose down -v
+
+# View logs for all services
+docker-compose logs -f
+
+# Rebuild images and start
+docker-compose up -d --build
