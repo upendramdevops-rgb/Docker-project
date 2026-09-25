@@ -1,0 +1,63 @@
+
+pipeline {
+agent {
+node {
+label 'prod'
+}
+}
+tools {
+maven 'mymaven'
+}
+stages {
+stage('Code') {
+steps {
+git "https://github.com//dockerwebapp.git"
+}
+}
+stage ("CQA") {
+steps {
+withSonarQubeEnv('mysonar') {
+sh "mvn clean verify sonar:sonar -Dsonar.projectKey=MyProject"
+}
+}
+}
+stage ("Build") {
+steps {
+sh 'mvn clean package'
+sh 'cp -r target Docker-app'
+}
+}
+stage ("Artifact") {
+steps {
+nexusArtifactUploader artifacts: [[artifactId: 'vprofi le', classifi er: '', fi le: 'target/vprofi le-v2.war', type: 'war']], credentialsId: 'nexus', groupId: 'com.visualpathit', nexusUrl: '3.142.143.226:8081', nexusVersion: 'nexus3', protocol: 'http', repository: 'myrepo', version: 'v2'
+}
+}
+stage ("Images") {
+steps {
+sh 'docker build -t shaikmustafa/automation:db Docker-db'
+sh 'docker build -t shaikmustafa/automation:app Docker-app'
+}
+}
+stage ("ImageScan") {
+steps {
+sh 'trivy image shaikmustafa/automation:db'
+sh 'trivy image shaikmustafa/automation:app'
+}
+}
+stage ("Push") {
+steps {
+script {
+withDockerRegistry(credentialsId: 'dockerhub') {
+sh 'docker push shaikmustafa/automation:db'
+sh 'docker push shaikmustafa/automation:app'
+}
+}
+}
+}
+stage ("Deploy") {
+steps {
+sh 'docker stack deploy -c compose.yml fl m'
+}
+}
+}
+}
