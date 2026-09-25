@@ -42,22 +42,22 @@ pipeline {
         }
         stage('Tag') {
             steps {
-                sh 'docker tag dbimage shaikmustafa/flm2026:dbimage'
-                sh 'docker tag authimage shaikmustafa/flm2026:authimage'
-                sh 'docker tag bookimage shaikmustafa/flm2026:bookimage'
-                sh 'docker tag borrowimage shaikmustafa/flm2026:borrowimage'
-                sh 'docker tag appimage shaikmustafa/flm2026:appimage'
+                sh 'docker tag dbimage upendra9010/libapp:dbimage'
+                sh 'docker tag authimage upendra9010/libapp:authimage'
+                sh 'docker tag bookimage upendra9010/libapp:bookimage'
+                sh 'docker tag borrowimage upendra9010/libapp:borrowimage'
+                sh 'docker tag appimage upendra9010/libapp:appimage'
             }
         }
         stage('Registry') {
             steps {
                 script {
                     withDockerRegistry(credentialsId: 'dockerhub') {
-                        sh 'docker push shaikmustafa/flm2026:dbimage'
-                        sh 'docker push shaikmustafa/flm2026:authimage'
-                        sh 'docker push shaikmustafa/flm2026:bookimage'
-                        sh 'docker push shaikmustafa/flm2026:borrowimage'
-                        sh 'docker push shaikmustafa/flm2026:appimage'
+                        sh 'docker push upendra9010/libapp:dbimage'
+                        sh 'docker push upendra9010/libapp:authimage'
+                        sh 'docker push upendra9010/libapp:bookimage'
+                        sh 'docker push upendra9010/libapp:borrowimage'
+                        sh 'docker push upendra9010/libapp:appimage'
                     }
                 }
             }
